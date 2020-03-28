@@ -101,7 +101,7 @@ for k in range(9,10):
 listaImagens = []
 leImagensDeTreinamento(2)
 imagem = listaImagens[9]
-dic 
+ 
 #image = PIL.Image.open('C:/Users/Yuri Oliveira/Desktop/orl_faces/s1/3.pgm')
 #mostra a imagem
 #for imagem in listaImagens:
