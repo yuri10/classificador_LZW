@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 #
 
 def leImagensDeTreinamento(nPessoa):
-        for j in range(1,imagensTreinPorPessoa + 1):       
+        for j in range(1,numeroImagensPessoa + 1):       
            listaImagens.append(PIL.Image.open('C:/Users/Yuri Oliveira/Desktop/orl_faces/s'+ str(nPessoa) +'/'+ str(j) +'.pgm'))
 
 #transforma a imagem numa string
@@ -35,14 +35,11 @@ def existeNoDic(simbolo):
 
 listaImagens = []
 numeroPessoas = 40
-imagensTreinPorPessoa = 9
+numeroImagensPessoa = 10
 
-leImagensDeTreinamento(3)
-
-imagem = listaImagens[0]
-
-mensagem = transformaImgEmString(imagem)
-           
+'''
+    Inicio do Treinamento
+'''
 #LZW_WikiPedia
 
 #Iniciando o dicionario
@@ -50,18 +47,18 @@ dic_tamanho = 256
 dicionario = [chr(i) for i in range(dic_tamanho)]
 
 tempos_k = []
-saidas = []
-dicionarios = []
+saidas = []   #variavel que guarda as saidas geradas por cada imagem. 40 pessoas x 9 imagens = 360 saidas
+dicionarios = []  #variavel que guarda o dicionario das 40 pessoas, um por pessoa
 #faz para K valendo de 9 a 16
 for k in range(9,10):
     
     #percorre todas as pessoas
-    for pessoa in range(1, numeroPessoas+1):
-        listaImagens = []
+    for pessoa in range(1, 3+1):
+        listaImagens = []  
         leImagensDeTreinamento(pessoa)
         dic = dicionario[0:] #para cada pessoa, "zera" o dicionario
-        #percorre todas as faces
-        for face in range(imagensTreinPorPessoa):
+        #percorre as 9 faces de cada pessoa
+        for face in range(numeroImagensPessoa):
             imagem = listaImagens[face]
             mensagem = transformaImgEmString(imagem)
 
@@ -91,12 +88,20 @@ for k in range(9,10):
                 else:
                     saida.append(existeNoDic(I))
                 
-            
             saidas.append(saida)
         dicionarios.append(dic)
             #tempos_k.append(time.time() - tempo_inicial)
-            
+'''            
+    Fim do Treinamento
     
+    Inicio da classificação
+''' 
+
+#testando a ultima imagem de uma pessoa
+listaImagens = []
+leImagensDeTreinamento(2)
+imagem = listaImagens[9]
+dic 
 #image = PIL.Image.open('C:/Users/Yuri Oliveira/Desktop/orl_faces/s1/3.pgm')
 #mostra a imagem
 #for imagem in listaImagens:
