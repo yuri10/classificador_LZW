@@ -32,6 +32,34 @@ def existeNoDic(simbolo):
         return dic.index(simbolo)
     return -1
 
+def LZW(k, mensagem, dic):
+    #pega o tempo de execucao
+    #tempo_inicial = time.time()
+    #Saida Codificada
+    saida = []
+    #variaveis auxiliar
+    I = ''
+    i=0    
+    for i in range(len(mensagem)):    
+        c = mensagem[i]
+        #verifica se existe o simbolo atual e o proximo no dicionario
+        if existeNoDic(I+c) != -1:
+            I = I+c
+        #senao existir, adiciona o indice do simbolo atual na saida e
+        #adiciona no dicionario o simbolo atual + proximo como novo indice
+        else:
+            saida.append(existeNoDic(I))
+            #adiciona o novo simbolo no dicionario (se ele não estiver cheio)
+            if len(dic) < (2**k):
+                dic.append(I+c)
+            I = c
+        #Enquanto nao pegar todos os simbolos, continua rodando o looping
+        if (i+1) < len(mensagem):
+            continue
+        else:
+            saida.append(existeNoDic(I))
+        
+    return saida
 
 listaImagens = []
 numeroPessoas = 40
@@ -61,33 +89,7 @@ for k in range(9,10):
         for face in range(numeroImagensPessoa):
             imagem = listaImagens[face]
             mensagem = transformaImgEmString(imagem)
-
-            #pega o tempo de execucao
-            #tempo_inicial = time.time()
-            #Saida Codificada
-            saida = []
-            #variaveis auxiliar
-            I = ''
-            i=0    
-            for i in range(len(mensagem)):    
-                c = mensagem[i]
-                #verifica se existe o simbolo atual e o proximo no dicionario
-                if existeNoDic(I+c) != -1:
-                    I = I+c
-                #senao existir, adiciona o indice do simbolo atual na saida e
-                #adiciona no dicionario o simbolo atual + proximo como novo indice
-                else:
-                    saida.append(existeNoDic(I))
-                    #adiciona o novo simbolo no dicionario (se ele não estiver cheio)
-                    if len(dic) < (2**k):
-                        dic.append(I+c)
-                    I = c
-                #Enquanto nao pegar todos os simbolos, continua rodando o looping
-                if (i+1) < len(mensagem):
-                    continue
-                else:
-                    saida.append(existeNoDic(I))
-                
+            saida = LZW(k, mensagem, dic)
             saidas.append(saida)
         dicionarios.append(dic)
             #tempos_k.append(time.time() - tempo_inicial)
