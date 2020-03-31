@@ -108,7 +108,7 @@ for k in range(9,kMax):
 ''' 
 
 def classificaImagem(pessoa, k):
-    saidas = saidas_classificacao[((k-9)*numeroPessoas):((k-9)*numeroPessoas+numeroPessoas)]
+    saidas = saidas_classificacao[((k-9)*(numeroPessoas**2))+(numeroPessoas*(pessoa-1)):((k-9)*(numeroPessoas**2))+(numeroPessoas*(pessoa))]
     tamanhoSaidas = [len(saida) for saida in saidas]
     menorTamanho = min(tamanhoSaidas)
     indice = tamanhoSaidas.index(menorTamanho)
