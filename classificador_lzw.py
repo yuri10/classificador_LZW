@@ -11,10 +11,7 @@ import matplotlib.pyplot as plt
 import time
 import random
 
-#treina com 9 imagens de cada pessoa
-#Gera o dicionario de cada pessoa e guarda numa variavel
-#
-
+#le todas as imagens de uma determinada pessoa na base de dados ORL
 def leImagensPessoa(nPessoa):
     listaImagens = []
     for j in range(1,numeroImagensPessoa + 1):       
@@ -28,6 +25,19 @@ def transformaImgEmString(imagem):
         for x in range(92):
             mensagem = mensagem + chr(imagem.getpixel((x,y)))
     return mensagem
+
+#verifica se a imagem da pessoa recebeu a classificacao correta, 1 pra sim e 0 pra nao
+def classificaImagem(pessoa, k):
+    saidas = saidas_classificacao[((k-9)*(numeroPessoas**2))+(numeroPessoas*(pessoa-1)):((k-9)*(numeroPessoas**2))+(numeroPessoas*(pessoa))]
+    tamanhoSaidas = [len(saida) for saida in saidas]
+    menorTamanho = min(tamanhoSaidas)
+    indice = tamanhoSaidas.index(menorTamanho)
+    print("indice: " + str(indice))
+    if indice == (pessoa - 1):
+        return 1
+    else:
+        print("classificacao incorreta da pessoa: " + str(pessoa))
+        return 0
 
 #Verifica se existe o simbolo no dicionario
 #Retorna o seu indice, caso exista.
@@ -65,29 +75,29 @@ def LZW(k, mensagem, dic):
         
     return saida
 
-listaImagens = []
-numeroPessoas = 4
-numeroImagensPessoa = 10
-kMax = 17
-
-
 '''
     Inicio do Treinamento
 '''
-#LZW_WikiPedia
+#parametros do algoritmo
+numeroPessoas = 40  #numero de pessoas da base de dados que quer testar
+numeroImagensPessoa = 10  #numero de imagens por pessoa
+kMax = 17 #faz o k variar de 9 a 16
+
 
 #Iniciando o dicionario
 dic_tamanho = 256
 dicionario = [chr(i) for i in range(dic_tamanho)]
 
-tempos_k = []
+tempos_k = [] #variavel que guarda os tempos de execução da criação dos dicionarios em cada K
 saidas = []   #variavel que guarda as saidas geradas por cada imagem. 40 pessoas x 9 imagens = 360 saidas
 dicionarios = []  #variavel que guarda o dicionario das 40 pessoas, um por pessoa
 listaImagensTeste = [random.randint(0,9) for i in range(numeroPessoas)]  #cria uma lista com os indices das imagens de teste de cada pessoa
 
 #faz para K valendo de 9 a 16
+#gera todos os dicionarios do projeto (um dicionario por pessoa)
 for k in range(9,kMax):
-    
+    #pega o tempo de execucao
+    tempo_inicial = time.time()
     #percorre todas as pessoas
     for pessoa in range(1, numeroPessoas+1):
         listaImagens = leImagensPessoa(pessoa)
@@ -100,28 +110,21 @@ for k in range(9,kMax):
             saida = LZW(k, mensagem, dic)
             #saidas.append(saida)
         dicionarios.append(dic)
-        #tempos_k.append(time.time() - tempo_inicial)
+    print("tempo: " + str(time.time() - tempo_inicial))
+    tempos_k.append(time.time() - tempo_inicial)
 '''            
     Fim do Treinamento
     
     Inicio da classificação
 ''' 
-
-def classificaImagem(pessoa, k):
-    saidas = saidas_classificacao[((k-9)*(numeroPessoas**2))+(numeroPessoas*(pessoa-1)):((k-9)*(numeroPessoas**2))+(numeroPessoas*(pessoa))]
-    tamanhoSaidas = [len(saida) for saida in saidas]
-    menorTamanho = min(tamanhoSaidas)
-    indice = tamanhoSaidas.index(menorTamanho)
-    if indice == (pessoa - 1):
-        return 1
-    else:
-        print("classificacao incorreta da pessoa: " + str(pessoa))
-        return -1
     
-saidas_classificacao = []
+saidas_classificacao = [] #guarda todas as saidas que foram geradas pelo laço abaixo
+tempos_k_classificacao = []
 
-
+#compara a foto de teste de cada pessoa com todos os dicionarios existentes (1 dicionario por pessoa)
 for k in range(9,kMax):
+    #pega o tempo de execucao
+    tempo_inicial = time.time()
     print("utilizando k: " + str(k))
     for pessoa in range(1, numeroPessoas+1):
         print("pessoa: " + str(pessoa))
@@ -133,9 +136,12 @@ for k in range(9,kMax):
             dic = dicionarios[d]
             saida = LZW(k, mensagem, dic)
             saidas_classificacao.append(saida)
+    print("tempo: " + str(time.time() - tempo_inicial))
+    tempos_k_classificacao.append(time.time() - tempo_inicial)
 
-qtdeAcertos = []
+qtdeAcertos = [] #lista que guarda a quantidade de acertos do algoritmo para cada K
 
+#verifica quantos acertos a máquina teve (para todos os Ks)
 for k in range(9,kMax):
     print("K valendo: " + str(k))
     classificacaoAcertos = 0
@@ -147,10 +153,14 @@ for k in range(9,kMax):
     print("Quantidade de acertos: " + str(classificacaoAcertos))
     qtdeAcertos.append(classificacaoAcertos)
     
-        
+#taxa de acertos (em porcentagem)
+#qtdeAcertos = [100*(acertos/numeroPessoas) for acertos in qtdeAcertos]
+
+
+
+
 #image = PIL.Image.open('C:/Users/Yuri Oliveira/Desktop/orl_faces/s1/3.pgm')
 #mostra a imagem
 #for imagem in listaImagens:
 #    plt.figure()
 #    plt.imshow(imagem)
-#plt.imshow(imagem)
