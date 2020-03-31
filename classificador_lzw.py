@@ -154,8 +154,34 @@ for k in range(9,kMax):
     qtdeAcertos.append(classificacaoAcertos)
     
 #taxa de acertos (em porcentagem)
-#qtdeAcertos = [100*(acertos/numeroPessoas) for acertos in qtdeAcertos]
+qtdeAcertos = [100*(acertos/numeroPessoas) for acertos in qtdeAcertos]
 
+#coloca tempo da classificacao em minutos
+tempos_k = [tempo/60 for tempo in tempos_k]
+
+#graficos de tempo de processamento do algoritmo
+plt.title('tempo de processamento do treinamento x K')
+plt.ylabel('Tempo de processamento (minutos)')
+plt.xlabel('K')
+plt.plot(list(range(9,17)), tempos_k)
+plt.grid(True)
+
+#grafico de taxa de acertos do algoritmo
+plt.title('taxa de acertos x K')
+plt.ylabel('Taxa de acertos')
+plt.xlabel('K')
+plt.plot(list(range(9,17)), qtdeAcertos)
+plt.grid(True)
+
+#coloca tempo da classificacao em minutos
+tempos_k_classificacao = [tempo/60 for tempo in tempos_k_classificacao]
+
+#graficos de tempo de processamento do algoritmo
+plt.title('tempo de processamento x K')
+plt.ylabel('Tempo de processamento (minutos)')
+plt.xlabel('K')
+plt.plot(list(range(9,17)), tempos_k_classificacao)
+plt.grid(True)
 
 
 
